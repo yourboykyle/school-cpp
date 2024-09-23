@@ -1,0 +1,8 @@
+﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(531,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (5.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  main.cpp
+C:\Users\kylel\Documents\Development\C++\Assignment1Part2\main\main.cpp(146,34): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+C:\Users\kylel\Documents\Development\C++\Assignment1Part2\main\main.cpp(154,37): warning C4244: 'return': conversion from 'double' to 'int', possible loss of data
+C:\Users\kylel\Documents\Development\C++\Assignment1Part2\main\main.cpp(180,34): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+C:\Users\kylel\Documents\Development\C++\Assignment1Part2\main\main.cpp(188,37): warning C4244: 'return': conversion from 'double' to 'int', possible loss of data
+C:\Users\kylel\Documents\Development\C++\Assignment1Part2\main\main.cpp(372,19): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  main.vcxproj -> C:\Users\kylel\Documents\Development\C++\Assignment1Part2\x64\Debug\main.exe

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <cmath>
 #include <climits>
 #include <vector>
@@ -21,10 +22,53 @@ void ren_ashbell();
 void tudor_drinks_some_tea();
 void zamka();
 void students_council_breakfast();
+void troubling_triangles();
+void crayola_lightsaber();
 
 int main()
 {
-    students_council_breakfast();
+    crayola_lightsaber();
+}
+
+void crayola_lightsaber() {
+    int n, count = 0;
+	string str, prevStr = "";
+
+    cin >> n;
+
+    for (int i = 0; i < n; i++) {
+        cin >> str;
+
+        if (str != prevStr) {
+            count++;
+            prevStr = str;
+        } else {
+            break;
+        }
+    }
+
+    cout << count << endl;
+}
+
+void troubling_triangles() {
+    int n;
+
+    cin >> n;
+
+    for (int i = 0; i < n; i++) {
+        double x1, y1, x2, y2, x3, y3;
+        cin >> x1 >> y1 >> x2 >> y2 >> x3 >> y3;
+
+        double a = abs(x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2;
+
+        double ab, bc, ac, p;
+        ab = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
+        bc = sqrt(pow(x3 - x2, 2) + pow(y3 - y2, 2));
+        ac = sqrt(pow(x3 - x1, 2) + pow(y3 - y1, 2));
+        p = ab + bc + ac;
+
+        cout << fixed << setprecision(2) << a << " " << p << endl;
+    }
 }
 
 void students_council_breakfast() {
