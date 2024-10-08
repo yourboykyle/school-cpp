@@ -6,6 +6,7 @@
 #include <tuple>
 #include <algorithm>
 #include <unordered_map>
+#include <queue>
 
 using namespace std;
 
@@ -46,10 +47,333 @@ void house_of_cards();
 void bus_jam();
 void chair_stacking();
 void factor_solitaire();
+void coin_change();
+void golf();
+void a_coin_problem();
+void coins();
+void shoe_shopping();
+void frog_1();
+void frog_2();
+void mouse_journey();
+void squares();
+void longest_common_subsequence();
+void longest_increasing_subsequence();
+void knapsack_1();
+void knapsack_2();
 
 int main()
 {
-    factor_solitaire();
+    knapsack_2();
+}
+
+void knapsack_2() {
+    int N, W;
+    cin >> N >> W;
+    vector<long long> dp(100001, 1e18);
+    dp[0] = 0;
+
+    for (int i = 0; i < N; i++) {
+        int w, v;
+        cin >> w >> v;
+        for (int j = 100000; j >= v; j--) {
+            dp[j] = min(dp[j], dp[j - v] + w);
+        }
+    }
+
+    int result = 0;
+    for (int i = 0; i <= 100000; i++) {
+        if (dp[i] <= W) result = i;
+    }
+
+    cout << result << endl;
+}
+
+void knapsack_1() {
+    int N, W;
+    cin >> N >> W;
+    vector<int> dp(W + 1, 0);
+
+    for (int i = 0; i < N; i++) {
+        int w, v;
+        cin >> w >> v;
+        for (int j = W; j >= w; j--) {
+            dp[j] = max(dp[j], dp[j - w] + v);
+        }
+    }
+
+    cout << dp[W] << endl;
+}
+
+void longest_increasing_subsequence() {
+    int n;
+    cin >> n;
+    vector<int> a(n);
+    for (int i = 0; i < n; i++) cin >> a[i];
+
+    vector<int> lis;
+
+    for (int i = 0; i < n; i++) {
+        auto it = lower_bound(lis.begin(), lis.end(), a[i]);
+        if (it == lis.end()) {
+            lis.push_back(a[i]);
+        }
+        else {
+            *it = a[i];
+        }
+    }
+
+    cout << lis.size() << endl;
+}
+
+void longest_common_subsequence() {
+    int N, M;
+    cin >> N >> M;
+    vector<int> seq1(N), seq2(M);
+    for (int i = 0; i < N; i++) cin >> seq1[i];
+    for (int i = 0; i < M; i++) cin >> seq2[i];
+
+    vector<vector<int>> dp(N + 1, vector<int>(M + 1, 0));
+
+    for (int i = 1; i <= N; i++) {
+        for (int j = 1; j <= M; j++) {
+            if (seq1[i - 1] == seq2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            }
+            else {
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+    }
+
+    cout << dp[N][M] << endl;
+}
+
+void squares() {
+    int N, M;
+    cin >> N >> M;
+    vector<vector<int>> grid(N, vector<int>(M));
+    vector<vector<int>> dp(N, vector<int>(M, 0));
+
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < M; j++) {
+            cin >> grid[i][j];
+        }
+    }
+
+    dp[0][0] = grid[0][0];
+
+    for (int i = 1; i < N; i++) {
+        dp[i][0] = dp[i - 1][0] + grid[i][0];
+    }
+
+    for (int j = 1; j < M; j++) {
+        dp[0][j] = dp[0][j - 1] + grid[0][j];
+    }
+
+    for (int i = 1; i < N; i++) {
+        for (int j = 1; j < M; j++) {
+            dp[i][j] = min(dp[i - 1][j], dp[i][j - 1]) + grid[i][j];
+        }
+    }
+
+    cout << dp[N - 1][M - 1] << endl;
+}
+
+void mouse_journey() {
+    int R, C, K;
+    cin >> R >> C >> K;
+    vector<vector<int>> grid(R + 1, vector<int>(C + 1, 0));
+    vector<vector<bool>> cat(R + 1, vector<bool>(C + 1, false));
+
+    for (int i = 0; i < K; i++) {
+        int r, c;
+        cin >> r >> c;
+        cat[r][c] = true;
+    }
+
+    grid[1][1] = 1;
+
+    for (int i = 1; i <= R; i++) {
+        for (int j = 1; j <= C; j++) {
+            if (cat[i][j]) continue;
+            if (i > 1) grid[i][j] += grid[i - 1][j];
+            if (j > 1) grid[i][j] += grid[i][j - 1];
+        }
+    }
+
+    cout << grid[R][C] << endl;
+}
+
+void frog_2() {
+    int N, K;
+    cin >> N >> K;
+    vector<int> h(N);
+    for (int i = 0; i < N; i++) cin >> h[i];
+
+    vector<int> dp(N, 1e9);
+    dp[0] = 0;
+
+    for (int i = 1; i < N; i++) {
+        for (int j = 1; j <= K && i - j >= 0; j++) {
+            dp[i] = min(dp[i], dp[i - j] + abs(h[i] - h[i - j]));
+        }
+    }
+
+    cout << dp[N - 1] << endl;
+}
+
+void frog_1() {
+    int N;
+    cin >> N;
+    vector<int> h(N);
+    for (int i = 0; i < N; i++) cin >> h[i];
+
+    vector<int> dp(N, 0);
+    dp[1] = abs(h[1] - h[0]);
+
+    for (int i = 2; i < N; i++) {
+        dp[i] = min(dp[i - 1] + abs(h[i] - h[i - 1]), dp[i - 2] + abs(h[i] - h[i - 2]));
+    }
+
+    cout << dp[N - 1] << endl;
+}
+
+void shoe_shopping() {
+    int N;
+    cin >> N;
+    vector<int> prices(N);
+    for (int i = 0; i < N; i++) {
+        cin >> prices[i];
+    }
+
+    vector<double> dp(N + 1, 1e9);
+    dp[0] = 0;
+
+    for (int i = 1; i <= N; i++) {
+        dp[i] = dp[i - 1] + prices[i - 1];
+        if (i >= 2) dp[i] = min(dp[i], dp[i - 2] + prices[i - 2] + prices[i - 1] * 0.5);
+        if (i >= 3) dp[i] = min(dp[i], dp[i - 3] + prices[i - 3] + prices[i - 2] + prices[i - 1] - min({ prices[i - 3], prices[i - 2], prices[i - 1] }));
+    }
+
+    printf("%.1f\n", dp[N]);
+}
+
+void coins() {
+    int N;
+    cin >> N;
+
+    vector<double> p(N);
+    for (int i = 0; i < N; i++) {
+        cin >> p[i];
+    }
+
+    vector<vector<double>> dp(N + 1, vector<double>(N + 1, 0));
+    dp[0][0] = 1.0;
+
+    for (int i = 1; i <= N; i++) {
+        for (int j = 0; j <= i; j++) {
+            dp[i][j] = dp[i - 1][j] * (1 - p[i - 1]);
+            if (j > 0) {
+                dp[i][j] += dp[i - 1][j - 1] * p[i - 1];
+            }
+        }
+    }
+
+    double result = 0;
+    for (int j = (N + 1) / 2; j <= N; j++) {
+        result += dp[N][j];
+    }
+
+    printf("%.10f\n", result);
+}
+
+void a_coin_problem() {
+    int N, V;
+    cin >> N >> V;
+
+    vector<int> coins(N);
+    for (int i = 0; i < N; i++) {
+        cin >> coins[i];
+    }
+
+    for (int i = 0; i < V; i++) {
+        int c, l;
+        cin >> c >> l;
+
+        vector<int> dp(c + 1, INT_MAX);
+        dp[0] = 0;
+
+        for (int j = 0; j < l; j++) {
+            for (int k = coins[j]; k <= c; k++) {
+                if (dp[k - coins[j]] != INT_MAX) {
+                    dp[k] = min(dp[k], dp[k - coins[j]] + 1);
+                }
+            }
+        }
+
+        if (dp[c] == INT_MAX) {
+            cout << -1 << endl;
+        }
+        else {
+            cout << dp[c] << endl;
+        }
+    }
+}
+
+void golf() {
+    int distance, n;
+    cin >> distance >> n;
+
+    vector<int> clubs(n);
+    for (int i = 0; i < n; i++) {
+        cin >> clubs[i];
+    }
+
+    vector<int> strokes(distance + 1, -1);
+    strokes[0] = 0;
+
+    queue<int> q;
+    q.push(0);
+
+    while (!q.empty()) {
+        int curr = q.front();
+        q.pop();
+
+        for (int club : clubs) {
+            int next = curr + club;
+            if (next <= distance && strokes[next] == -1) {
+                strokes[next] = strokes[curr] + 1;
+                q.push(next);
+            }
+        }
+    }
+
+    if (strokes[distance] != -1) {
+        cout << "Roberta wins in " << strokes[distance] << " strokes." << endl;
+    }
+    else {
+        cout << "Roberta acknowledges defeat." << endl;
+    }
+}
+
+void coin_change() {
+    int x, n;
+    cin >> x >> n;
+    vector<int> coins(n);
+    for (int i = 0; i < n; i++) cin >> coins[i];
+
+    vector<int> dp(x + 1, INT_MAX);
+    dp[0] = 0;
+
+    for (int i = 1; i <= x; i++) {
+        for (int j = 0; j < n; j++) {
+            if (i - coins[j] >= 0 && dp[i - coins[j]] != INT_MAX) {
+                dp[i] = min(dp[i], dp[i - coins[j]] + 1);
+            }
+        }
+    }
+
+    cout << dp[x] << endl;
 }
 
 void factor_solitaire() {
