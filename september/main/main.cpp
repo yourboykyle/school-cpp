@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <unordered_map>
 #include <queue>
+#include <map>
 
 using namespace std;
 
@@ -60,10 +61,178 @@ void longest_common_subsequence();
 void longest_increasing_subsequence();
 void knapsack_1();
 void knapsack_2();
+void firefly();
+void deal_or_no_deal();
+void occupy_parking();
+void party_invitation();
+void smallest_mode();
+void median_mark();
+void sorting();
+void bubble_sort();
 
 int main()
 {
-    knapsack_2();
+    bubble_sort();
+}
+
+void bubble_sort() {
+    int N;
+    cin >> N;
+    vector<int> arr(N);
+    for (int i = 0; i < N; i++) cin >> arr[i];
+
+    for (int i = 0; i < N; i++) cout << arr[i] << " ";
+    cout << endl;
+
+    for (int i = 0; i < N - 1; i++) {
+        for (int j = 0; j < N - 1 - i; j++) {
+            if (arr[j] > arr[j + 1]) {
+                swap(arr[j], arr[j + 1]);
+                for (int k = 0; k < N; k++) cout << arr[k] << " ";
+                cout << endl;
+            }
+        }
+    }
+}
+
+void sorting() {
+    int N;
+    cin >> N;
+    vector<int> marks(N);
+    for (int i = 0; i < N; i++) cin >> marks[i];
+
+    sort(marks.begin(), marks.end());
+
+    for (int mark : marks) cout << mark << endl;
+}
+
+void median_mark() {
+    int N;
+    cin >> N;
+    vector<int> marks(N);
+    for (int i = 0; i < N; i++) cin >> marks[i];
+
+    sort(marks.begin(), marks.end());
+
+    if (N % 2 == 0) {
+        cout << (marks[N / 2] + marks[N / 2 - 1]) / 2 << endl;
+    }
+    else {
+        cout << marks[N / 2] << endl;
+    }
+}
+
+void smallest_mode() {
+    int N;
+    cin >> N;
+    map<int, int> freq;
+    for (int i = 0; i < N; i++) {
+        int num;
+        cin >> num;
+        freq[num]++;
+    }
+
+    int mode = 0, maxFreq = 0;
+    for (auto& p : freq) {
+        if (p.second > maxFreq || (p.second == maxFreq && p.first < mode)) {
+            maxFreq = p.second;
+            mode = p.first;
+        }
+    }
+
+    cout << mode << endl;
+}
+
+void party_invitation() {
+    int K, m;
+    cin >> K >> m;
+    vector<int> friends(K);
+    for (int i = 0; i < K; i++) friends[i] = i + 1;
+
+    for (int i = 0; i < m; i++) {
+        int r;
+        cin >> r;
+        vector<int> remaining;
+        for (int j = 0; j < friends.size(); j++) {
+            if ((j + 1) % r != 0) remaining.push_back(friends[j]);
+        }
+        friends = remaining;
+    }
+
+    for (int f : friends) cout << f << endl;
+}
+
+void occupy_parking() {
+    int a, b, c, d;
+    cin >> a >> b >> c >> d;
+    if ((a == 8 || a == 9) && (d == 8 || d == 9) && (b == c)) {
+        cout << "ignore" << endl;
+    }
+    else {
+        cout << "answer" << endl;
+    }
+}
+
+void deal_or_no_deal() {
+    int n, offer;
+    int amounts[] = { 100, 500, 1000, 5000, 10000, 25000, 50000, 100000, 500000, 1000000 };
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        int opened;
+        cin >> opened;
+        amounts[opened - 1] = 0;
+    }
+    cin >> offer;
+
+    int sum = 0, count = 0;
+    for (int i = 0; i < 10; i++) {
+        if (amounts[i] > 0) {
+            sum += amounts[i];
+            count++;
+        }
+    }
+
+    if (offer > sum / count) {
+        cout << "deal" << endl;
+    }
+    else {
+        cout << "no deal" << endl;
+    }
+}
+
+void firefly() {
+    int N, H;
+    cin >> N >> H;
+    vector<int> lengths;
+
+    for (int i = 0; i < N; i++) {
+        lengths.push_back([=] { int l; cin >> l; return l; }());
+    }
+
+    int min_obstacles = N, levels = 0;
+    for (int i = 1; i <= H; i++) { // For each level (height)
+        int collisions = 0;
+        for (int j = 1; j <= N; j++) { // For each obstacle
+            if (j % 2 == 0) { // Stalactite (top down)
+                if (i > H - lengths[j - 1]) { // If the firefly is hitting the obstacle
+					collisions++;
+				}
+            } else { // Stalagmite (bottom up)
+				if (i <= lengths[j - 1]) { // If the firefly is hitting the obstacle
+                    collisions++;
+				}
+            }
+        }
+
+        if (collisions < min_obstacles) {
+            levels = 1;
+			min_obstacles = collisions;
+		} else if (collisions == min_obstacles) {
+			levels++;
+		}
+    }
+
+    cout << min_obstacles << " " << levels << endl;
 }
 
 void knapsack_2() {
