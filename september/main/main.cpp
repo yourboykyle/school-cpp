@@ -8,6 +8,8 @@
 #include <unordered_map>
 #include <queue>
 #include <map>
+#include <set>
+#include <string>
 
 using namespace std;
 
@@ -69,10 +71,510 @@ void smallest_mode();
 void median_mark();
 void sorting();
 void bubble_sort();
+void magic_squares();
+void rotate90(int n, int matrix[100][100]);
+bool isOriginal(int n, int matrix[100][100]);
+void sunflowers();
+void are_we_there_yet();
+void bluebook_triangle();
+void bluebook_magic_square();
+void festival();
+void wet_floor();
+void cudoviste();
+void queens_cant_attack_me();
+void kemonomimi_competition();
+void topyodeller();
+void the_game_of_life();
+int countLiveNeighbors(int x, int y);
+int nextGeneration();
+bool isBreakpoint(int i);
+void boring_business();
+void fibonacci_numbers();
+void squares();
 
 int main()
 {
-    bubble_sort();
+    squares();
+
+    return 0;
+}
+
+void squares() {
+    int tiles;
+    cin >> tiles;
+    int side_length = floor(sqrt(tiles));
+    cout << "The largest square has side length " << side_length << "." << endl;
+}
+
+void fibonacci_numbers() {
+    vector<long long int> fib(201);
+    fib[1] = 1;
+    fib[2] = 1;
+
+    for (int i = 3; i <= 200; i++) {
+        fib[i] = fib[i - 1] + fib[i - 2];
+    }
+
+    int n;
+    vector<string> output;
+    while (cin >> n && n != 0) {
+		output.push_back(to_string(fib[n]));
+    }
+
+	for (string s : output) {
+		cout << s << endl;
+	}
+}
+
+void boring_business() {
+    set<pair<int, int>> foundation_grid = { {0, -1}, {0, -2}, {0, -3}, {1, -3}, {2, -3}, {3, -3},
+                                           {3, -4}, {3, -5}, {4, -5}, {5, -5}, {5, -4}, {5, -3},
+                                           {6, -3}, {7, -3}, {7, -4}, {7, -5}, {7, -6}, {7, -7},
+                                           {6, -7}, {5, -7}, {4, -7}, {3, -7}, {2, -7}, {1, -7},
+                                           {0, -7}, {-1, -7}, {-1, -6}, {-1, -5} };
+
+    int x = -1, y = -5;
+    char direction;
+    int distance;
+
+    while (true) {
+        cin >> direction >> distance;
+        if (direction == 'q') break;
+
+        bool danger = false;
+
+        if (direction == 'l') {
+            for (int i = 1; i <= distance; i++) {
+                if (foundation_grid.count({ x - i, y })) {
+                    danger = true;
+                }
+                foundation_grid.insert({ x - i, y });
+            }
+            x -= distance;
+        }
+        else if (direction == 'r') {
+            for (int i = 1; i <= distance; i++) {
+                if (foundation_grid.count({ x + i, y })) {
+                    danger = true;
+                }
+                foundation_grid.insert({ x + i, y });
+            }
+            x += distance;
+        }
+        else if (direction == 'u') {
+            for (int i = 1; i <= distance; i++) {
+                if (foundation_grid.count({ x, y + i })) {
+                    danger = true;
+                }
+                foundation_grid.insert({ x, y + i });
+            }
+            y += distance;
+        }
+        else if (direction == 'd') {
+            for (int i = 1; i <= distance; i++) {
+                if (foundation_grid.count({ x, y - i })) {
+                    danger = true;
+                }
+                foundation_grid.insert({ x, y - i });
+            }
+            y -= distance;
+        }
+
+        cout << x << " " << y << " ";
+        if (danger) {
+            cout << "DANGER" << endl;
+            break;
+        }
+        else {
+            cout << "safe" << endl;
+        }
+    }
+}
+
+vector<vector<char>> grid;
+
+int countLiveNeighbors(int x, int y) {
+    int count = 0;
+    int directions[8][2] = { {-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1} };
+    for (int i = 0; i < 8; i++) {
+        int dx = directions[i][0], dy = directions[i][1];
+        if (grid[y + dy][x + dx] == 'X')
+            count++;
+    }
+    return count;
+}
+
+int nextGeneration() {
+    int alive = 0;
+    vector<vector<char>> newGrid = grid;
+    int height = static_cast<int>(grid.size());
+    int width = static_cast<int>(grid[0].size());
+
+    for (int y = 1; y < height - 1; y++) {
+        for (int x = 1; x < width - 1; x++) {
+            int liveneigh = countLiveNeighbors(x, y);
+            if (liveneigh == 3 || (grid[y][x] == 'X' && liveneigh == 2)) {
+                newGrid[y][x] = 'X';
+                alive++;
+            }
+            else {
+                newGrid[y][x] = '.';
+            }
+        }
+    }
+    grid = newGrid;
+    return alive;
+}
+
+bool isBreakpoint(int i) {
+    return i == 1 || i == 5 || i == 10 || i == 50 || i == 100;
+}
+
+void the_game_of_life() {
+    int height, width;
+    cin >> height >> width;
+
+    grid.resize(height + 2, vector<char>(width + 2, '.'));
+    for (int y = 1; y <= height; y++) {
+        for (int x = 1; x <= width; x++) {
+            cin >> grid[y][x];
+        }
+    }
+
+    for (int i = 0; i < 100; i++) {
+        int alive = nextGeneration();
+        if (isBreakpoint(i + 1))
+            cout << alive << endl;
+    }
+}
+
+void topyodeller() {
+    int n, k;
+    cin >> n >> k;
+    vector<int> total(n, 0), worst_rank(n, 1);
+
+    for (int round = 0; round < k; round++) {
+        vector<pair<int, int>> scores;
+        for (int i = 0; i < n; i++) {
+            int score;
+            cin >> score;
+            total[i] += score;
+            scores.push_back({ total[i], i });
+        }
+        sort(scores.rbegin(), scores.rend());
+
+        for (int i = 0; i < n; i++) {
+            int current_rank = i + 1;
+            int id = scores[i].second;
+            worst_rank[id] = max(worst_rank[id], current_rank);
+        }
+    }
+
+    int max_score = *max_element(total.begin(), total.end());
+    for (int i = 0; i < n; i++) {
+        if (total[i] == max_score) {
+            cout << "Yodeller " << i + 1 << " is the TopYodeller: score " << total[i] << ", worst rank " << worst_rank[i] << endl;
+        }
+    }
+}
+
+void kemonomimi_competition() {
+    int N, C[4], start = 0;
+    cin >> N;
+    for (int j = 0; j < 4; j++) cin >> C[j];
+
+    int submissions[10][4];
+    for (int j = 0; j < N; j++) {
+        cin >> submissions[j][0] >> submissions[j][1] >> submissions[j][2] >> submissions[j][3];
+        start = max(start, submissions[j][2]);
+    }
+
+    for (int j = 0; j < N; j++) {
+        int timeLeft = 180 - start;
+        int neededTime = submissions[j][3] * C[submissions[j][0] - 1];
+        if (submissions[j][1] == 10) {
+            cout << 0 << endl;
+        }
+        else if (neededTime > timeLeft) {
+            cout << "The kemonomimi are too cute!" << endl;
+        }
+        else {
+            cout << 10 - submissions[j][1] << endl;
+        }
+    }
+}
+
+void queens_cant_attack_me() {
+    int N, M;
+    cin >> N >> M;
+    vector<vector<bool>> attacked(N + 1, vector<bool>(N + 1, false));
+    vector<pair<int, int>> queens(M);
+
+    for (int i = 0; i < M; i++) {
+        cin >> queens[i].first >> queens[i].second;
+        int x = queens[i].first, y = queens[i].second;
+
+        for (int j = 1; j <= N; j++) {
+            attacked[x][j] = true;
+            attacked[j][y] = true;
+        }
+
+        for (int j = -N; j <= N; j++) {
+            if (x + j > 0 && x + j <= N && y + j > 0 && y + j <= N)
+                attacked[x + j][y + j] = true;
+            if (x + j > 0 && x + j <= N && y - j > 0 && y - j <= N)
+                attacked[x + j][y - j] = true;
+        }
+    }
+
+    int count = 0;
+    for (int i = 1; i <= N; i++) {
+        for (int j = 1; j <= N; j++) {
+            if (!attacked[i][j]) count++;
+        }
+    }
+
+    cout << count << endl;
+}
+
+void cudoviste() {
+    int R, C;
+    cin >> R >> C;
+    char grid[50][50];
+    for (int i = 0; i < R; i++) {
+        for (int j = 0; j < C; j++) {
+            cin >> grid[i][j];
+        }
+    }
+
+    int counts[5] = { 0 };
+
+    for (int i = 0; i < R - 1; i++) {
+        for (int j = 0; j < C - 1; j++) {
+            if (grid[i][j] == '#' || grid[i][j + 1] == '#' || grid[i + 1][j] == '#' || grid[i + 1][j + 1] == '#')
+                continue;
+
+            int cars = (grid[i][j] == 'X') + (grid[i][j + 1] == 'X') + (grid[i + 1][j] == 'X') + (grid[i + 1][j + 1] == 'X');
+            counts[cars]++;
+        }
+    }
+
+    for (int i = 0; i < 5; i++) {
+        cout << counts[i] << endl;
+    }
+}
+
+void wet_floor() {
+    int N, M;
+    cin >> N >> M;
+
+	vector<string> grid(N);
+	for (int i = 0; i < N; i++) {
+		cin >> grid[i];
+	}
+
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) {
+			if (grid[i][j] == 'W') {
+				cout << 'W';
+			}
+			else {
+                // Check if there is a wet floor tile above, below, left, or right
+				bool wet = false;
+				if (i > 0 && grid[i - 1][j] == 'W') wet = true;
+				if (i < N - 1 && grid[i + 1][j] == 'W') wet = true;
+				if (j > 0 && grid[i][j - 1] == 'W') wet = true;
+				if (j < M - 1 && grid[i][j + 1] == 'W') wet = true;
+
+				cout << (wet ? 'C' : '.');
+			}
+		}
+		cout << endl;
+	}
+}
+
+void festival() {
+    int N;
+    cin >> N;
+    vector<string> grid(N);
+    for (int i = 0; i < N; i++) cin >> grid[i];
+
+    vector<int> students(N, 0);
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            if (grid[i][j] == 'S') students[j]++;
+        }
+    }
+
+    vector<string> output;
+    for (int i = 0; i < N; i++) {
+        string outputRow = "";
+        for (int j = 0; j < N; j++) {
+            if (students[j] > 0) {
+				outputRow += 'S';
+                students[j]--;
+            } else {
+                outputRow += '.';
+            }
+        }
+		output.push_back(outputRow);
+    }
+
+	// Loop through the output backwards and print it
+	for (int i = N - 1; i >= 0; i--) {
+		cout << output[i] << endl;
+	}
+}
+
+void bluebook_magic_square() {
+    int T;
+    cin >> T;
+    while (T--) {
+        int N;
+        cin >> N;
+        int grid[50][50], sum = 0, valid = 1;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                cin >> grid[i][j];
+            }
+        }
+        for (int i = 0; i < N; i++) sum += grid[0][i];
+        for (int i = 1; i < N && valid; i++) {
+            int rowSum = 0;
+            for (int j = 0; j < N; j++) rowSum += grid[i][j];
+            if (rowSum != sum) valid = 0;
+        }
+        for (int j = 0; j < N && valid; j++) {
+            int colSum = 0;
+            for (int i = 0; i < N; i++) colSum += grid[i][j];
+            if (colSum != sum) valid = 0;
+        }
+        cout << (valid ? "yes" : "no") << endl;
+    }
+}
+
+void bluebook_triangle() {
+    int N;
+    cin >> N;
+    int triangle[21][21] = { 0 };
+
+    for (int i = 0; i < N; i++) {
+        triangle[i][0] = triangle[i][i] = 1;
+        for (int j = 1; j < i; j++) {
+            triangle[i][j] = triangle[i - 1][j - 1] + triangle[i - 1][j];
+        }
+    }
+
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j <= i; j++) {
+            cout << triangle[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+void are_we_there_yet() {
+    int d[4];
+    cin >> d[0] >> d[1] >> d[2] >> d[3];
+    int dist[5][5] = { 0 };
+
+    dist[0][1] = d[0];
+    dist[0][2] = d[0] + d[1];
+    dist[0][3] = d[0] + d[1] + d[2];
+    dist[0][4] = d[0] + d[1] + d[2] + d[3];
+
+    for (int i = 1; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            dist[i][j] = abs(dist[0][i] - dist[0][j]);
+        }
+    }
+
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            cout << dist[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+void rotate90(int n, int matrix[100][100]) {
+    int temp[100][100];
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            temp[j][n - 1 - i] = matrix[i][j];
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            matrix[i][j] = temp[i][j];
+}
+
+bool isOriginal(int n, int matrix[100][100]) {
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            if (i > 0 && matrix[i][j] < matrix[i - 1][j]) return false;
+            else if (j > 0 && matrix[i][j] < matrix[i][j - 1]) return false;
+    return true;
+}
+
+void sunflowers() {
+    int n, matrix[100][100];
+    cin >> n;
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            cin >> matrix[i][j];
+
+    while (!isOriginal(n, matrix))
+        rotate90(n, matrix);
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cout << matrix[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+void magic_squares() {
+    int grid[4][4];
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            cin >> grid[i][j];
+        }
+    }
+
+    int sum = 0;
+    for (int j = 0; j < 4; j++) {
+        sum += grid[0][j];
+    }
+
+    bool isMagic = true;
+    for (int i = 1; i < 4; i++) {
+        int rowSum = 0;
+        for (int j = 0; j < 4; j++) {
+            rowSum += grid[i][j];
+        }
+        if (rowSum != sum) {
+            isMagic = false;
+            break;
+        }
+    }
+
+    for (int j = 0; j < 4; j++) {
+        int colSum = 0;
+        for (int i = 0; i < 4; i++) {
+            colSum += grid[i][j];
+        }
+        if (colSum != sum) {
+            isMagic = false;
+            break;
+        }
+    }
+
+    if (isMagic) {
+        cout << "magic" << endl;
+    }
+    else {
+        cout << "not magic" << endl;
+    }
 }
 
 void bubble_sort() {
