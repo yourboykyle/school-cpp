@@ -10,6 +10,7 @@
 #include <map>
 #include <set>
 #include <string>
+#include <sstream>
 
 using namespace std;
 
@@ -90,16 +91,64 @@ int nextGeneration();
 bool isBreakpoint(int i);
 void boring_business();
 void fibonacci_numbers();
-void squares();
+void squares2();
+void censor();
+void sentences();
 
-int main()
+/*int main()
 {
-    squares();
+    sentences();
 
     return 0;
+}*/
+
+void sentences() {
+    int n1, n2, n3;
+    cin >> n1 >> n2 >> n3;
+
+    vector<string> subjects(n1), verbs(n2), objects(n3);
+
+    for (int i = 0; i < n1; i++) cin >> subjects[i];
+    for (int i = 0; i < n2; i++) cin >> verbs[i];
+    for (int i = 0; i < n3; i++) cin >> objects[i];
+
+    for (int i = 0; i < n1; i++) {
+        for (int j = 0; j < n2; j++) {
+            for (int k = 0; k < n3; k++) {
+                cout << subjects[i] << " " << verbs[j] << " " << objects[k] << "." << endl;
+            }
+        }
+    }
 }
 
-void squares() {
+void censor() {
+    int n;
+    cin >> n;
+    cin.ignore();
+
+    for (int i = 0; i < n; i++) {
+        string line, word;
+        getline(cin, line);
+        stringstream ss(line);
+
+        while (ss >> word) {
+            if (word.length() == 4) {
+                cout << "****";
+            }
+            else {
+                cout << word;
+            }
+
+            if (ss.peek() == ' ') {
+                cout << " ";
+            }
+        }
+
+        cout << endl;
+    }
+}
+
+void squares2() {
     int tiles;
     cin >> tiles;
     int side_length = floor(sqrt(tiles));
