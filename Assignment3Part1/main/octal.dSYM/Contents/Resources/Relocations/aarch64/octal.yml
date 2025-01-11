@@ -1,0 +1,5 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/kyle/Desktop/Development/C++/school-cpp/Assignment3Part1/main/octal'
+relocations:     []
+...
